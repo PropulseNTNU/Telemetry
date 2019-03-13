@@ -1,21 +1,18 @@
-#ifndef XBEE
-#define XBEE
+#ifndef XBEE_TX_H
+#define XBEE_TX_H
 
 #include <stdint.h>
 
 #define RESET_PIN 39 
 #define SLEEP_PIN 16 //Don't know what this should be yet
-
+#define TIMER_DELAY 10 //How often to transmit
 /*
  *  Class for transmitting and receiving data through XBee.
  *
  *  Variables:
  *      num_sens_bytes              Number of bytes in sensor array.
- *      num_flags                   Number of bytes in flag array.
- *      size_compressed_flags       Number of bytes for storing compressed flags.
  *      package_number              Incremented for every package that is transmitted.
  *      *sensors                    Pointer to array of sensor data. 
- *      *flags                      Pointer to array of flag data.
  *
  *  Important methods:
  *      XBee()                      Constructor
@@ -25,45 +22,23 @@
 class XBee {
   
     uint8_t num_sens_bytes;
-    uint8_t num_flags;
-    uint8_t size_compressed_flags;
-    
+    unsigned long timer; 
     uint16_t package_number;
-    uint8_t *sensors;
-    uint8_t *flags;
-
-    /*
-     *   Compresses flags and transmits through xbee.
-     */   
-    void transmit_flags(void);
-
-    
-    /*
-     *   Compresses array of up to 8 bools to 1 byte.
-     *   Input:
-     *       bools[]                     Array of bools.
-     *       number_of_bools             Size of bools[] array.
-     *       *byte_with_bools            Pointer to byte where compressed data is stored.
-     */
-    void bools_to_byte(const uint8_t bools[], const uint8_t number_of_bools, uint8_t *byte_with_bools);
-
+    uint8_t *sensors;     
     
 public:
    
     /*
      *   Constructor
      *   Input:
-     *       void* sensors               Array of sensor data. Remember to cast to (void*).
-     *       bool flags[]                Array of flags.
-     *       uint8_t num_sens            Number of Bytes in sensor array.
-     *       uint8_t num_flags           Number of Bytes in flag array.
+     *       void* sensors           Array of sensor data. Remember to cast to (void*).
+     *       uint8_t num_sens        Number of Bytes in sensor array.
      */
-    XBee(void* sensors, bool flags[], const uint8_t num_sens, const uint8_t num_flags);
+    XBee(void* sensors, const uint8_t num_sens);
 
     /* 
-     *  Transmits package number and sensor/flag data.
-     *  Compresses flag array before transmitting.
-     *  Format                          <[package_number][flags][sensors]> 
+     *  Transmits package number and sensor data.
+     *  Format                       <[package_number][sensors]> 
      */
     void transmit(void);
 
