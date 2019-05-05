@@ -1,5 +1,5 @@
 #include "xbee_tx.h"
-#include <arduino.h>
+#include <Arduino.h>
 
 
 XBee::XBee(void* sensors, const uint8_t num_sens_bytes) 
@@ -14,7 +14,8 @@ XBee::XBee(void* sensors, const uint8_t num_sens_bytes)
 
           //Setting up sleep pin
           //pinMode(SLEEP_PIN, OUTPUT);
-          //digitalWrite(SLEEP_PIN, LOW);       
+          //digitalWrite(SLEEP_PIN, LOW);     
+          Serial.println("XBee initialized");
     }
 
 
@@ -26,6 +27,7 @@ void XBee::reset(void) {
 }
 
 void XBee::transmit(void) {
+    
     if(millis()-timer > TIMER_DELAY) {
         Serial5.write('<');
         Serial5.write((uint8_t*)&(++package_number), sizeof(package_number));
